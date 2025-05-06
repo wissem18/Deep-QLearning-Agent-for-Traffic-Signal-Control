@@ -1,15 +1,15 @@
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL']='2'  # kill warning about tensorflow
-import tensorflow as tf
-import numpy as np
+import tensorflow as tf # type: ignore
+import numpy as np # type: ignore
 import sys
 
-from tensorflow import keras
-from tensorflow.keras import layers
-from tensorflow.keras import losses
-from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.utils import plot_model
-from tensorflow.keras.models import load_model
+from tensorflow import keras # type: ignore
+from keras import layers # type: ignore
+from keras import losses # type: ignore
+from keras.optimizers import Adam # type: ignore
+from keras.utils import plot_model # type: ignore
+from keras.models import load_model # type: ignore
 
 
 class TrainModel:
@@ -32,7 +32,7 @@ class TrainModel:
         outputs = layers.Dense(self._output_dim, activation='linear')(x)
 
         model = keras.Model(inputs=inputs, outputs=outputs, name='my_model')
-        model.compile(loss=losses.mean_squared_error, optimizer=Adam(lr=self._learning_rate))
+        model.compile(loss=losses.mean_squared_error, optimizer=Adam(learning_rate=self._learning_rate))
         return model
     
 
@@ -56,7 +56,8 @@ class TrainModel:
         Train the nn using the updated q-values
         """
         self._model.fit(states, q_sa, epochs=1, verbose=0)
-
+        # clear session to avoid slowdown from memory leaks
+        tf.keras.backend.clear_session()
 
     def save_model(self, path):
         """
